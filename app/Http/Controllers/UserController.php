@@ -455,5 +455,10 @@ class UserController extends Controller
         curl_close($ch);
 
        }
+
+       public function apiuser(){
+        $user = User->get();
+        return $user;
+       }
 }
 

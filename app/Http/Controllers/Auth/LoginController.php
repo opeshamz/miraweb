@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+use App\User;
 use App\Notifications\TwoFactorCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -78,6 +79,25 @@ class LoginController extends Controller
 
 //
     }
+// login api
+    public function login(Request $request)
+    {
 
+        if (!Auth::attempt($request->only('email', 'password','device_name'))) {
+            return response()->json([
+                'message' => 'Invalid login details'
+            ], 401);
+        }
 
+        $user = User::where('email', $request['email'])->firstOrFail();
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'status' => 'logedin',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'data'=>$user
+        ]);
+    }
 }

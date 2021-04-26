@@ -18,6 +18,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "kingflamez/laravelrave": "^2.0",
         "laravel/framework": "^7.24",
+        "laravel/sanctum": "^2.10",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.1",
         "paypal/rest-api-sdk-php": "^1.14",

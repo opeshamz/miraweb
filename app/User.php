@@ -2,7 +2,7 @@
 
 namespace App;
 
-
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +14,7 @@ use Bavix\Wallet\Interfaces\Wallet;
 
 class User extends Authenticatable implements Wallet, WalletFloat
 {
-    use Notifiable, HasWallet, HasWallets, HasWalletFloat;
+    use Notifiable, HasWallet, HasWallets, HasWalletFloat, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.

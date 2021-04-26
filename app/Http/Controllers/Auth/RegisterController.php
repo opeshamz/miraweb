@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 use App\Mail\ActivationEmail;
 use App\Events\ActivationCodeEvent;
@@ -14,7 +13,6 @@ use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
 class RegisterController extends Controller
 {
     /*
@@ -46,7 +44,6 @@ class RegisterController extends Controller
     {
         $this->middleware('guest');
     }
-
     /**
      * Get a validator for an incoming registration request.
      *
@@ -117,5 +114,48 @@ class RegisterController extends Controller
         return redirect('/login')->with("success","We have sent an activation link to your email $user->email, Please click the link in the email to verify your email address and activate your Miraweb account.");
 
     }
+    /*
+      |--------------------------------------------------------------------------
+      | Api Register Controller
+      |--------------------------------------------------------------------------
+      |
+      | This controller handles the api registration of new users as well as their
+      | validation and creation. By default this controller uses a trait to
+      | provide this functionality without requiring any additional code.
+      |
+      */
 
+
+    public function register(Request $request) {
+        $validator  =   Validator::make($request->all(), [
+            "firstname"  =>  "required",
+            "lastname"  =>   "required",
+            "email"  =>      'required|string|email|max:255|unique:users',
+            "password"  =>     'required|string|min:8'
+        ]);
+         if($validator->fails()) {
+            return response()->json(["status" => "failed", "validation_errors" => $validator->errors()]);
+        }
+        $inputs = $request->all();
+        $inputs["password"] = Hash::make($request->password);
+        $user   =   User::create($inputs);
+       $token = $user->createToken('auth_token')->plainTextToken;
+
+        if(!is_null($user)) {
+            return response()->json([
+                "status" => "success",
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                "message" => "Success! registration completed",
+                "data" => $user]);
+        }
+        else {
+            return response()->json(["status" => "failed", "message" => "Registration failed!"]);
+        }
+    }
 }
+
+
+
+
+
